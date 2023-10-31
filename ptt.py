@@ -52,7 +52,7 @@ while True:
         ediconf = input("Enter your choice: ")
 
         if ediconf == "1":
-            print("Please choose an action for your editor configs:")
+            print("Please choose an action for your neovim config:")
             print("1) nvchad")
             print("2) nvpak")
             print("3) lunarvim")
@@ -72,9 +72,24 @@ while True:
             else:
                 print("Invalid choice.")
         elif ediconf == "2":
-            print("You selected emacs. Add your emacs installation and configuration here.")
+            print("Please choose an action for your editor configs:")
+            print("1) Doom emacs")
+            print("2) Spacemacs")
+            emacconf = input("Enter your choice: ")
+
+            if emacconf == "1":
+                os.system("sudo pacman -S emacs git --noconfirm")
+                os.system("git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs")
+                print("dont forgot to add ~/.config/emacs/bin to your path.")
+                print("after adding to path, re run your terminal and type doom install.")
+            elif emacconf == "2":
+                os.system("sudo pacman -S emacs git --noconfirm")
+                os.system("git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d")
+                print("now you can now open emacs for changes to take effect.")
+            else:
+                print("Invalid choice.")
         elif ediconf == "3":
-            print("You selected vim. Add your vim installation and configuration here.")
+            print("soon.....")
         else:
             print("Invalid choice.")
     elif choice == "5":
