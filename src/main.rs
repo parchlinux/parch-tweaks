@@ -1,5 +1,6 @@
 use std::{
     io,
+    io::Write,
     process::{self, Command},
 };
 
@@ -7,10 +8,12 @@ const INVALID_CHOICE: &str = "Invalid choice.";
 const PLEASE_CHOOSE: &str = "Please choose an action for";
 
 fn execute_command(command: &str, args: Vec<&str>) {
-    Command::new(command)
+    let output = Command::new(command)
         .args(args)
         .output()
         .expect("failed to execute the process");
+
+    io::stdout().write_all(&output.stdout).unwrap();
 }
 
 fn get_choice() -> String {
