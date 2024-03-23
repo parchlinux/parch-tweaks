@@ -2,20 +2,23 @@ use std::{
     io,
     process::{self, Command},
 };
+
 fn execute_command(command: &str, args: Vec<&str>) {
     Command::new(command)
         .args(args)
         .output()
         .expect("failed to execute the process");
 }
+
 fn get_inputed(print: &str) -> String {
     println!("{}", print);
     let mut input = String::new();
     io::stdin()
         .read_line(&mut input)
         .unwrap_or_else(|_| process::exit(1));
-    input.to_owned()
+    input.trim().to_owned()
 }
+
 fn main() {
     execute_command("figlet", vec!["Parch Linux tweak tool"]);
 
