@@ -3,6 +3,9 @@ use std::{
     process::{self, Command},
 };
 
+const INVALID_CHOICE: &str = "Invalid choice.";
+const PLEASE_CHOOSE: &str = "Please choose an action for";
+
 fn execute_command(command: &str, args: Vec<&str>) {
     Command::new(command)
         .args(args)
@@ -30,10 +33,11 @@ fn main() {
     println!("3) Change Aur Helper");
     println!("4) Install Editor configs");
     println!("5) Exit");
+
     let choice = get_choice();
     match choice.as_str() {
         "1" => {
-            println!("Please choose an action for emoji Packages:");
+            println!("{PLEASE_CHOOSE} emoji Packages:");
             println!("1) ios");
             println!("2) fluent (microsoft)");
             let emoji_choice = get_choice();
@@ -58,7 +62,7 @@ fn main() {
                         vec!["pacman", "-Sy", "fluent-emojies", "--noconfirm"],
                     );
                 }
-                &_ => println!("Invalid choice."),
+                &_ => println!("{INVALID_CHOICE}"),
             }
         }
         "2" => {
@@ -81,7 +85,7 @@ fn main() {
             )
         }
         "3" => {
-            println!("Please choose an action for aur helper:");
+            println!("{PLEASE_CHOOSE} aur helper:");
             println!("1) yay");
             println!("2) paru (default in parchlinux)");
             let aur = get_choice();
@@ -94,18 +98,18 @@ fn main() {
                     execute_command("sudo", vec!["pacman", "-Rds", "yay", "--noconfirm"]);
                     execute_command("sudo", vec!["pacman", "-Sy", "paru", "--noconfirm"]);
                 }
-                &_ => println!("Invalid choice."),
+                &_ => println!("{INVALID_CHOICE}"),
             }
         }
         "4" => {
-            println!("Please choose an action for your editor configs:");
+            println!("{PLEASE_CHOOSE} your editor configs:");
             println!("1) neovim");
             println!("2) emacs");
             println!("3) vim");
             let ediconf = get_choice();
             match ediconf.as_str() {
                 "1" => {
-                    println!("Please choose an action for your neovim config:");
+                    println!("{PLEASE_CHOOSE} your neovim config:");
                     println!("1) nvchad");
                     println!("2) nvpak");
                     println!("3) lunarvim");
@@ -152,11 +156,11 @@ fn main() {
                             );
                             execute_command("LV_BRANCH='release-1.3/neovim-0.9'", vec!["bash","<(curl","-s","https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.3/neovim-0.9/utils/installer/install.sh)"]);
                         }
-                        &_ => println!("Invalid choice."),
+                        &_ => println!("{INVALID_CHOICE}"),
                     }
                 }
                 "2" => {
-                    println!("Please choose an action for your editor configs:");
+                    println!("{PLEASE_CHOOSE} your editor configs:");
                     println!("1) Dooedm emacs");
                     println!("2) Spaedcemacs");
                     let emacconf = get_choice();
@@ -199,15 +203,15 @@ fn main() {
                         "3" => {
                             println!("soon...");
                         }
-                        &_ => println!("Invalid choice."),
+                        &_ => println!("{INVALID_CHOICE}"),
                     }
                 }
-                &_ => println!("Invalid choice."),
+                &_ => println!("{INVALID_CHOICE}"),
             }
         }
         "5" => process::exit(0),
         &_ => {
-            println!("invalid choice")
+            println!("{INVALID_CHOICE}")
         }
     }
     println!("done with section {}.", choice);
