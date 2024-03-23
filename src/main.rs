@@ -10,12 +10,14 @@ fn execute_command(command: &str, args: Vec<&str>) {
         .expect("failed to execute the process");
 }
 
-fn get_inputed(print: &str) -> String {
-    println!("{}", print);
+fn get_choice() -> String {
+    println!("Enter your choice: ");
+
     let mut input = String::new();
     io::stdin()
         .read_line(&mut input)
         .unwrap_or_else(|_| process::exit(1));
+
     input.trim().to_owned()
 }
 
@@ -28,13 +30,13 @@ fn main() {
     println!("3) Change Aur Helper");
     println!("4) Install Editor configs");
     println!("5) Exit");
-    let choice = get_inputed("Enter your choice: ");
+    let choice = get_choice();
     match choice.as_str() {
         "1" => {
             println!("Please choose an action for emoji Packages:");
             println!("1) ios");
             println!("2) fluent (microsoft)");
-            let emoji_choice = get_inputed("Enter your choice:");
+            let emoji_choice = get_choice();
             match emoji_choice.as_str() {
                 "1" => {
                     execute_command(
@@ -82,7 +84,7 @@ fn main() {
             println!("Please choose an action for aur helper:");
             println!("1) yay");
             println!("2) paru (default in parchlinux)");
-            let aur = get_inputed("Enter your choice:");
+            let aur = get_choice();
             match aur.as_str() {
                 "1" => {
                     execute_command("sudo", vec!["pacman", "-Rds", "paru", "--noconfirm"]);
@@ -100,14 +102,14 @@ fn main() {
             println!("1) neovim");
             println!("2) emacs");
             println!("3) vim");
-            let ediconf = get_inputed("Enter your choice: ");
+            let ediconf = get_choice();
             match ediconf.as_str() {
                 "1" => {
                     println!("Please choose an action for your neovim config:");
                     println!("1) nvchad");
                     println!("2) nvpak");
                     println!("3) lunarvim");
-                    let neoconf = get_inputed("Enter your choice:");
+                    let neoconf = get_choice();
                     match neoconf.as_str() {
                         "1" => {
                             execute_command(
@@ -157,7 +159,7 @@ fn main() {
                     println!("Please choose an action for your editor configs:");
                     println!("1) Dooedm emacs");
                     println!("2) Spaedcemacs");
-                    let emacconf = get_inputed("Enter your choice: ");
+                    let emacconf = get_choice();
                     match emacconf.as_str() {
                         "1" => {
                             execute_command(
