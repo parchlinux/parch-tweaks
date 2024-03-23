@@ -13,7 +13,11 @@ fn execute_command(command: &str, args: Vec<&str>) {
         .output()
         .expect("failed to execute the process");
 
-    io::stdout().write_all(&output.stdout).unwrap();
+    if output.status.success() {
+        io::stdout().write_all(&output.stdout).unwrap();
+    } else {
+        io::stdout().write_all(&output.stderr).unwrap();
+    }
 }
 
 fn get_choice() -> String {
