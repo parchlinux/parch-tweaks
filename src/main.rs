@@ -142,6 +142,18 @@ mod install_neovim_config {
             "https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.3/neovim-0.9/utils/installer/install.sh)"]
         );
     }
+    pub fn lazyvim() {
+        execute_command("sudo", vec!["pacman", "-S", "neovim", "git", "--noconfirm"]);
+        execute_command(
+            "git",
+            vec![
+                "clone",
+                "https://github.com/LazyVim/starter",
+                "~/.config/nvim",
+            ],
+        );
+        println!("new you can run neovim by typing: nvim");
+    }
 }
 
 mod install_emacs_config {
