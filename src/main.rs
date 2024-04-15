@@ -201,13 +201,15 @@ fn install_editor_configs() {
             println!("{PLEASE_CHOOSE} your neovim config:\n\
                 1) nvchad\n\
                 2) nvpak\n\
-                3) lunarvim");
+                3) lunarvim\n\
+                4) lazyvim");
 
             let neoconf = get_choice();
             match neoconf.as_str() {
                 "1" => install_neovim_config::nvchad(),
                 "2" => install_neovim_config::nvpack(),
                 "3" => install_neovim_config::lunarvim(),
+                "4" => install_neovim_config::lazyvim(),
                 _ => println!("{INVALID_CHOICE}"),
             }
         }
