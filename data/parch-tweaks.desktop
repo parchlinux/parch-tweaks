@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Parch Linux Tweaks
+Comment=Configure your Parch Linux system
+Exec=parch-tweaks
+Icon=parch-tweaks
+Terminal=false
+Type=Application
+Categories=System;Utility;Settings;
+Keywords=parch;linux;tweaks;config;settings;
+StartupNotify=true

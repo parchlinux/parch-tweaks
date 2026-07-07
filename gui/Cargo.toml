@@ -1,0 +1,15 @@
+[package]
+name = "parch-tweaks"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "parch-tweaks"
+path = "src/main.rs"
+
+[dependencies]
+parch-core = { path = "../crates/parch-core" }
+gtk = { package = "gtk4", version = "0.9", features = ["v4_12"] }
+adw = { package = "libadwaita", version = "0.7", features = ["v1_4"] }
+tokio = { version = "1", features = ["full"] }
+anyhow = "1"

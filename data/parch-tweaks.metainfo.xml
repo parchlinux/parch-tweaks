@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.parchlinux.parch-tweaks</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>Parch Linux Tweaks</name>
+  <summary>Configure your Parch Linux system</summary>
+  <description>
+    <p>
+      Parch Linux Tweaks is a graphical configuration tool for Parch Linux.
+      It allows you to manage emoji sets, AUR helpers, editor configurations,
+      fonts, and shell setups through an easy-to-use interface.
+    </p>
+  </description>
+  <url type="homepage">https://parchlinux.com</url>
+  <url type="bugtracker">https://github.com/parchlinux/parch-tweaks/issues</url>
+  <developer id="org.parchlinux">
+    <name>Parch Linux</name>
+  </developer>
+  <launchable type="desktop-id">parch-tweaks.desktop</launchable>
+  <provides>
+    <binary>parch-tweaks</binary>
+    <binary>ptt</binary>
+  </provides>
+  <releases>
+    <release version="0.1.0" date="2026-07-07">
+      <description>
+        <p>Initial release with GTK4/libadwaita GUI.</p>
+      </description>
+    </release>
+  </releases>
+</component>

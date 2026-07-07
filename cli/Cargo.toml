@@ -1,0 +1,12 @@
+[package]
+name = "ptt"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "ptt"
+path = "src/main.rs"
+
+[dependencies]
+parch-core = { path = "../crates/parch-core" }
+tokio = { version = "1", features = ["full"] }
