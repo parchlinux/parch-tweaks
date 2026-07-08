@@ -1,5 +1,6 @@
 use adw::prelude::*;
-use gtk::{self, glib};
+use crate::log_window;
+use gtk;
 use parch_core::fonts::{self, FontCategory, FONT_PACKAGES, get_category_label};
 
 pub fn build_page(toast_overlay: &adw::ToastOverlay) -> adw::NavigationPage {
@@ -75,27 +76,36 @@ pub fn build_page(toast_overlay: &adw::ToastOverlay) -> adw::NavigationPage {
 
                 row.add_suffix(&install_btn);
 
+                let btn_ref = install_btn.clone();
+                let toast_clone = toast_overlay.clone();
                 let font_package = font.package.to_string();
                 let font_name = font.name.to_string();
-                let toast_clone = toast_overlay.clone();
 
                 install_btn.connect_clicked(move |_| {
-                    let toast_overlay = toast_clone.clone();
-                    let font_package = font_package.clone();
-                    let font_name = font_name.clone();
+                    let parent = match btn_ref.root().and_downcast::<gtk::Window>() {
+                        Some(w) => w,
+                        None => return,
+                    };
 
-                    glib::spawn_future_local(async move {
-                        match fonts::install_font(&font_package).await {
-                            Ok(()) => {
-                                let toast = adw::Toast::new(&format!("Installed {}", font_name));
-                                toast_overlay.add_toast(toast);
-                            }
-                            Err(e) => {
-                                let toast = adw::Toast::new(&format!("Failed: {}", e));
-                                toast_overlay.add_toast(toast);
-                            }
-                        }
-                    });
+                    let toast = toast_clone.clone();
+                    let name_clone = font_name.clone();
+
+                    log_window::run_commands(
+                        &format!("Installing {}...", font_name),
+                        &parent,
+                        vec![(
+                            "pkexec".to_string(),
+                            vec![
+                                "pacman".to_string(),
+                                "-Sy".to_string(),
+                                font_package.clone(),
+                                "--noconfirm".to_string(),
+                            ],
+                        )],
+                        move || {
+                            toast.add_toast(adw::Toast::new(&format!("Installed {}", name_clone)));
+                        },
+                    );
                 });
             }
 

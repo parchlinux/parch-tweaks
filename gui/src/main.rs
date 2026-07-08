@@ -1,9 +1,13 @@
 mod app;
+mod log_window;
 mod pages;
 
 use adw::prelude::*;
 
 fn main() {
+    let rt = tokio::runtime::Runtime::new().expect("failed to create Tokio runtime");
+    let _guard = rt.enter();
+
     let app = adw::Application::builder()
         .application_id("org.parchlinux.parch-tweaks")
         .build();

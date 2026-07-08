@@ -137,10 +137,12 @@ impl AppWindow {
         });
 
         let sidebar_page = adw::NavigationPage::builder()
+            .title("")
             .child(&sidebar)
             .build();
 
         let content_page = adw::NavigationPage::builder()
+            .title("")
             .child(&stack)
             .build();
 

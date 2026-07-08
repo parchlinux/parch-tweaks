@@ -1,5 +1,6 @@
 use adw::prelude::*;
-use gtk::{self, glib};
+use crate::log_window;
+use gtk;
 use parch_core::aur;
 
 pub fn build_page(toast_overlay: &adw::ToastOverlay) -> adw::NavigationPage {
@@ -86,32 +87,62 @@ pub fn build_page(toast_overlay: &adw::ToastOverlay) -> adw::NavigationPage {
         .margin_top(12)
         .build();
 
+    let btn_ref = apply_btn.clone();
     let toast_clone = toast_overlay.clone();
     let current_label_clone = current_label.clone();
-    let selected_clone = selected_ref.clone();
 
     apply_btn.connect_clicked(move |_| {
-        let toast_overlay = toast_clone.clone();
-        let current_label = current_label_clone.clone();
-        let selected = selected_clone.borrow().clone();
+        let parent = match btn_ref.root().and_downcast::<gtk::Window>() {
+            Some(w) => w,
+            None => return,
+        };
 
-        if let Some(name) = selected {
-            glib::spawn_future_local(async move {
-                if let Some(helper) = aur::AUR_HELPERS.iter().find(|h| h.name == name) {
-                    match aur::switch_aur_helper(helper).await {
-                        Ok(()) => {
-                            let toast = adw::Toast::new(&format!("Switched to {}", name));
-                            toast_overlay.add_toast(toast);
-                            current_label.set_text(&format!("Current: {}", name));
-                        }
-                        Err(e) => {
-                            let toast = adw::Toast::new(&format!("Failed: {}", e));
-                            toast_overlay.add_toast(toast);
-                        }
-                    }
-                }
-            });
+        let selected = selected_ref.borrow().clone();
+        let Some(name) = selected else { return };
+
+        let Some(helper) = aur::AUR_HELPERS.iter().find(|h| h.name == name) else { return };
+
+        let current = aur::get_installed_aur_helper();
+        let mut commands = Vec::new();
+
+        if let Some(ref current_name) = current {
+            if current_name == &name {
+                return;
+            }
+            commands.push((
+                "pkexec".to_string(),
+                vec![
+                    "pacman".to_string(),
+                    "-Rds".to_string(),
+                    current_name.clone(),
+                    "--noconfirm".to_string(),
+                ],
+            ));
         }
+
+        commands.push((
+            "pkexec".to_string(),
+            vec![
+                "pacman".to_string(),
+                "-Sy".to_string(),
+                helper.package.to_string(),
+                "--noconfirm".to_string(),
+            ],
+        ));
+
+        let toast = toast_clone.clone();
+        let label = current_label_clone.clone();
+        let name_display = name.clone();
+
+        log_window::run_commands(
+            &format!("Switching to {}...", name),
+            &parent,
+            commands,
+            move || {
+                toast.add_toast(adw::Toast::new(&format!("Switched to {}", name_display)));
+                label.set_text(&format!("Current: {}", name_display));
+            },
+        );
     });
 
     content.append(&apply_btn);

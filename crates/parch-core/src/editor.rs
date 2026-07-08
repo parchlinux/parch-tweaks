@@ -1,4 +1,22 @@
 use anyhow::Result;
+use std::path::PathBuf;
+
+fn state_dir() -> PathBuf {
+    let home = std::env::var("HOME").unwrap_or_else(|_| "/root".to_string());
+    PathBuf::from(home).join(".config/parch-tweaks")
+}
+
+pub fn save_installed_config(config_name: &str) -> Result<()> {
+    let dir = state_dir();
+    std::fs::create_dir_all(&dir)?;
+    std::fs::write(dir.join("installed_config.txt"), config_name)?;
+    Ok(())
+}
+
+pub fn get_installed_config() -> Option<String> {
+    let path = state_dir().join("installed_config.txt");
+    std::fs::read_to_string(path).ok().map(|s| s.trim().to_string()).filter(|s| !s.is_empty())
+}
 
 #[derive(Debug, Clone)]
 pub struct EditorConfig {
@@ -63,8 +81,25 @@ pub const EMACS_CONFIGS: &[EmacsConfig] = &[
     },
 ];
 
-pub async fn install_neovim_config(_name: &str, repo: &str) -> Result<()> {
-    crate::run_pkexec(&["pacman", "-S", "neovim", "git", "--noconfirm"]).await?;
+pub fn check_deps(programs: &[&str]) -> Result<()> {
+    let mut missing = Vec::new();
+    for &prog in programs {
+        if crate::run_command("which", &[prog]).is_err() {
+            missing.push(prog);
+        }
+    }
+
+    if missing.is_empty() {
+        Ok(())
+    } else {
+        Err(anyhow::anyhow!(
+            "Missing required programs: {}. Please install them with your package manager.",
+            missing.join(", ")
+        ))
+    }
+}
+
+pub fn install_neovim_config(_name: &str, repo: &str) -> Result<()> {
     let home = std::env::var("HOME").unwrap_or_else(|_| "/root".to_string());
     let target = format!("{}/.config/nvim", home);
 
@@ -77,8 +112,7 @@ pub async fn install_neovim_config(_name: &str, repo: &str) -> Result<()> {
     Ok(())
 }
 
-pub async fn install_emacs_config(name: &str, repo: &str) -> Result<()> {
-    crate::run_pkexec(&["pacman", "-S", "emacs", "git", "--noconfirm"]).await?;
+pub fn install_emacs_config(name: &str, repo: &str) -> Result<()> {
     let home = std::env::var("HOME").unwrap_or_else(|_| "/root".to_string());
     let target = if name == "Spacemacs" {
         format!("{}/.emacs.d", home)

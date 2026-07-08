@@ -521,7 +521,7 @@ dependencies = [
 
 [[package]]
 name = "parch-core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "tokio",
@@ -529,7 +529,7 @@ dependencies = [
 
 [[package]]
 name = "parch-tweaks"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "gtk4",
@@ -589,14 +589,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8fd00f0bb2e90d81d1044c2b32617f68fcb9fa3bb7640c23e9c748e53fb30934"
 dependencies = [
  "unicode-ident",
-]
-
-[[package]]
-name = "ptt"
-version = "0.1.0"
-dependencies = [
- "parch-core",
- "tokio",
 ]
 
 [[package]]

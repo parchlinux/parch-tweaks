@@ -69,9 +69,9 @@ fn install_editor_configs() {
             let neo_choice = get_choice();
             if let Ok(idx) = neo_choice.parse::<usize>() {
                 if idx >= 1 && idx <= configs.len() {
-                    let rt = tokio::runtime::Runtime::new().unwrap();
+                    editor::check_deps(&["nvim", "git"]).expect("dependencies missing");
                     let config = &configs[idx - 1];
-                    rt.block_on(editor::install_neovim_config(config.name, config.repo))
+                    editor::install_neovim_config(config.name, config.repo)
                         .expect("failed to install neovim config");
                     println!("Installed {} config.", configs[idx - 1].name);
                 }
@@ -85,9 +85,9 @@ fn install_editor_configs() {
             let emacs_choice = get_choice();
             if let Ok(idx) = emacs_choice.parse::<usize>() {
                 if idx >= 1 && idx <= configs.len() {
-                    let rt = tokio::runtime::Runtime::new().unwrap();
+                    editor::check_deps(&["emacs", "git"]).expect("dependencies missing");
                     let config = &configs[idx - 1];
-                    rt.block_on(editor::install_emacs_config(config.name, config.repo))
+                    editor::install_emacs_config(config.name, config.repo)
                         .expect("failed to install emacs config");
                     println!("Installed {} config.", configs[idx - 1].name);
                 }

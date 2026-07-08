@@ -1,5 +1,6 @@
 use adw::prelude::*;
-use gtk::{self, glib};
+use crate::log_window;
+use gtk;
 use parch_core::shell;
 
 pub fn build_page(toast_overlay: &adw::ToastOverlay) -> adw::NavigationPage {
@@ -86,30 +87,47 @@ pub fn build_page(toast_overlay: &adw::ToastOverlay) -> adw::NavigationPage {
         .margin_top(12)
         .build();
 
+    let btn_ref = apply_btn.clone();
     let toast_clone = toast_overlay.clone();
     let current_label_clone = current_label.clone();
-    let selected_clone = selected_ref.clone();
 
     apply_btn.connect_clicked(move |_| {
-        let toast_overlay = toast_clone.clone();
-        let current_label = current_label_clone.clone();
-        let selected = selected_clone.borrow().clone();
+        let parent = match btn_ref.root().and_downcast::<gtk::Window>() {
+            Some(w) => w,
+            None => return,
+        };
 
-        if let Some((name, cmd)) = selected {
-            glib::spawn_future_local(async move {
-                match shell::install_shell_config(&cmd).await {
-                    Ok(()) => {
-                        let toast = adw::Toast::new(&format!("Installed {}", name));
-                        toast_overlay.add_toast(toast);
-                        current_label.set_text(&format!("Current: {}", name));
-                    }
-                    Err(e) => {
-                        let toast = adw::Toast::new(&format!("Failed: {}", e));
-                        toast_overlay.add_toast(toast);
-                    }
-                }
-            });
-        }
+        let selected = selected_ref.borrow().clone();
+        let Some((ref name, ref cmd)) = selected else { return };
+
+        let toast = toast_clone.clone();
+        let label = current_label_clone.clone();
+        let name_clone = name.clone();
+        let cmd_clone = cmd.clone();
+
+        log_window::run_commands(
+            &format!("Installing {}...", name),
+            &parent,
+            vec![
+                (
+                    "pkexec".to_string(),
+                    vec![
+                        "pacman".to_string(),
+                        "-Sy".to_string(),
+                        "zsh".to_string(),
+                        "--noconfirm".to_string(),
+                    ],
+                ),
+                (
+                    "bash".to_string(),
+                    vec!["-c".to_string(), cmd_clone],
+                ),
+            ],
+            move || {
+                toast.add_toast(adw::Toast::new(&format!("Installed {}", name_clone)));
+                label.set_text(&format!("Current: {}", name_clone));
+            },
+        );
     });
 
     content.append(&apply_btn);

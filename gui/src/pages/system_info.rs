@@ -1,5 +1,5 @@
 use adw::prelude::*;
-use gtk::{self, glib};
+use gtk;
 use parch_core::system;
 use std::process::Command;
 
@@ -103,11 +103,8 @@ pub fn build_page() -> adw::NavigationPage {
             let cmd = binary.to_string();
             row.connect_activated(move |_| {
                 let cmd = cmd.clone();
-                let _ = glib::spawn_future_local(async move {
-                    let _ = tokio::task::spawn_blocking(move || {
-                        let _ = Command::new(&cmd).spawn();
-                    })
-                    .await;
+                std::thread::spawn(move || {
+                    let _ = Command::new(&cmd).spawn();
                 });
             });
         } else {
