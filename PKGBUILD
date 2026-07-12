@@ -1,7 +1,7 @@
 # Maintainer: Parch Linux Team <team@parchlinux.com>
 
 pkgname=parch-tweaks
-pkgver=0.1.0
+pkgver=0.1.1
 pkgrel=1
 pkgdesc='Configuration tool for Parch Linux'
 arch=('x86_64')
@@ -9,21 +9,26 @@ url='https://github.com/parchlinux/parch-tweaks'
 license=('GPL-3.0-or-later')
 depends=('gtk4' 'libadwaita' 'pacman')
 makedepends=('cargo' 'git')
-source=("$pkgname-$pkgver.tar.gz::https://github.com/parchlinux/parch-tweaks/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('SKIP')
+source=("git+https://github.com/parchlinux/parch-tweaks.git")
+b2sums=('SKIP')
+
+pkgver() {
+    cd "$pkgname"
+    git describe --long --tags | sed 's/^v//;s/[^-]*-g\([0-9a-f]*\)/\1/;s/-/./g'
+}
 
 prepare() {
-    cd "$pkgname-$pkgver"
+    cd "$pkgname"
     cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
 }
 
 build() {
-    cd "$pkgname-$pkgver"
+    cd "$pkgname"
     cargo build --frozen --release --bin parch-tweaks --bin ptt
 }
 
 package() {
-    cd "$pkgname-$pkgver"
+    cd "$pkgname"
 
     install -Dm755 "target/release/parch-tweaks" "$pkgdir/usr/bin/parch-tweaks"
     install -Dm755 "target/release/ptt" "$pkgdir/usr/bin/ptt"

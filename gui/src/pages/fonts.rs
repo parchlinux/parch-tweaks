@@ -77,6 +77,7 @@ pub fn build_page(toast_overlay: &adw::ToastOverlay) -> adw::NavigationPage {
                 row.add_suffix(&install_btn);
 
                 let btn_ref = install_btn.clone();
+                let row_ref = row.clone();
                 let toast_clone = toast_overlay.clone();
                 let font_package = font.package.to_string();
                 let font_name = font.name.to_string();
@@ -89,6 +90,8 @@ pub fn build_page(toast_overlay: &adw::ToastOverlay) -> adw::NavigationPage {
 
                     let toast = toast_clone.clone();
                     let name_clone = font_name.clone();
+                    let row_clone = row_ref.clone();
+                    let btn_clone = btn_ref.clone();
 
                     log_window::run_commands(
                         &format!("Installing {}...", font_name),
@@ -103,6 +106,10 @@ pub fn build_page(toast_overlay: &adw::ToastOverlay) -> adw::NavigationPage {
                             ],
                         )],
                         move || {
+                            row_clone.remove(&btn_clone);
+                            let check = gtk::Image::from_icon_name("object-select-symbolic");
+                            check.add_css_class("success");
+                            row_clone.add_suffix(&check);
                             toast.add_toast(adw::Toast::new(&format!("Installed {}", name_clone)));
                         },
                     );

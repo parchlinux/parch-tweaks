@@ -19,7 +19,7 @@ pub enum FontCategory {
 pub const FONT_PACKAGES: &[FontPackage] = &[
     FontPackage {
         name: "Inter",
-        package: "ttf-inter",
+        package: "inter-font",
         category: FontCategory::Ui,
         description: "Modern UI font",
     },
@@ -49,7 +49,7 @@ pub const FONT_PACKAGES: &[FontPackage] = &[
     },
     FontPackage {
         name: "Noto Sans",
-        package: "ttf-noto",
+        package: "noto-fonts",
         category: FontCategory::Ui,
         description: "Google Noto font family",
     },
